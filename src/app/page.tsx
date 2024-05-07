@@ -20,14 +20,14 @@ export default function Home() {
 
         <NavbarContent justify="end" className={'ml-5'}>
           <NavbarItem >
-            <Button as={Link} className={'bg-gradient-to-tr from-teal-500 to-green-500 text-white font-bold'} href="#" variant="flat"
+            <Button as={Link} className={'bg-gradient-to-tr from-teal-500 to-green-500 text-white font-bold'} href="/login" variant="flat"
             radius={'full'}
             >
               Login
             </Button>
           </NavbarItem>
           <NavbarItem>
-            <Button as={Link} className={'bg-gradient-to-tr from-cyan-500 to-teal-500 text-white font-bold'} href="#" variant="flat"
+            <Button as={Link} className={'bg-gradient-to-tr from-cyan-500 to-teal-500 text-white font-bold'} href="/signup" variant="flat"
             radius={'full'}
             >
               Sign Up
