@@ -1,6 +1,6 @@
 "use client"
 
-import {Button, Card, CardBody, Image} from "@nextui-org/react";
+import {Card, CardBody, Image, Avatar} from "@nextui-org/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -9,12 +9,22 @@ import {
     FormControl,
     FormField,
     FormItem,
-    FormMessage,
+    FormMessage
 } from "@/components/ui/form"
+import {Button} from "@/components/ui/button";
 import {Input} from "@nextui-org/input";
 import React from "react";
 import {EyeSlashFilledIcon} from "@/icons/EyeSlashFilledicon";
 import {EyeFilledIcon} from "@/icons/EyeFilledIcon";
+import {useRouter} from "next/navigation"
+import Cookies from "js-cookie"
+
+
+const emptyStringToUndefined = z.literal('').transform(() => undefined);
+
+export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
+    return schema.optional().or(emptyStringToUndefined);
+}
 
 const formSchema = z.object({
     email: z.string().email({
@@ -28,34 +38,68 @@ const formSchema = z.object({
     }),
     first_name: z.string(),
     last_name: z.string(),
-    avatar: z.string().url({
-        message: "Enter a valid URL"
-    })
+    avatar: asOptionalField(z.string().url())
 })
+
+
 
 export default function SignupPage() {
 
+    const [userExist, setUserExist] = React.useState(false)
+    const [userNameExist, setUserNameExist] = React.useState(false)
+
+    const router = useRouter()
+
+    const [isVisible, setIsVisible] = React.useState(false);
+
+    const toggleVisibility = () => setIsVisible(!isVisible);
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
+            email:"",
             username: "",
+            password:"",
+            first_name:"",
+            last_name:"",
+            avatar:""
         },
     })
 
-    // 2. Define a submit handler.
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
-        console.log(values)
+    async function onSubmit (values: z.infer<typeof formSchema>) {
+
+        if(values.avatar === undefined){
+            values.avatar = 'https://images.unsplash.com/broken'
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/signup`,{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(values)
+        })
+
+        if(!response.ok){
+            const errorData = await response.json()
+            if (errorData.error){
+                setUserExist(true)
+                setUserNameExist(false)
+                return
+            }
+            setUserExist(false)
+            setUserNameExist(true)
+            return
+        }
+        const data = await response.json()
+        Cookies.set('token', data.token)
+        router.push('/menu')
     }
 
-    const [isVisible, setIsVisible] = React.useState(false);
-    const toggleVisibility = () => setIsVisible(!isVisible);
 
   return (
     <div className={'min-h-screen bg-gradient-to-tr from-cyan-500 to-teal-500 flex flex-col md:flex-row flex-grow'}>
-        <section className={'w-full md:w-1/2 flex flex-col justify-center items-center'}>
+        <section className={'w-full md:w-1/2 flex flex-col justify-center items-center mt-5 md:mt-0'}>
             <div className={'w-5/6 md:w-2/3'}>
                 <Card className="py-1 bg-teal-400 flex flex-row">
                     <CardBody className="overflow-visible py-2 flex flex-row ml-8 items-center">
@@ -131,12 +175,11 @@ export default function SignupPage() {
                                                 type={'email'}
                                                 isRequired
                                                 label={'Email'}
-                                                errorMessage={'Please enter a valid email'}
                                                 className={'max-w-xs h-14'}
+                                                errorMessage={'Enter a valid email address'}
                                         />
                                     </FormControl>
 
-                                    <FormMessage className={'text-white text-sm'} />
                                 </FormItem>
                             )}
                         />
@@ -151,12 +194,11 @@ export default function SignupPage() {
                                                type={'text'}
                                                isRequired
                                                label={'Username'}
-                                               errorMessage={'complete the field'}
                                                className={'max-w-xs h-12'}
+                                               errorMessage={'Enter a valid Username'}
                                         />
                                     </FormControl>
 
-                                    <FormMessage className={'text-white text-sm'} />
                                 </FormItem>
                             )}
                         />
@@ -179,13 +221,12 @@ export default function SignupPage() {
                                                     )}
                                                 </button>
                                             }
-                                               errorMessage={'complete the field'}
                                             type={isVisible ? "text" : "password"}
                                             className="max-w-xs h-12"
+                                            errorMessage={'Complete the field'}
                                         />
                                     </FormControl>
-
-                                    <FormMessage className={'text-white text-sm'} />
+                                    <FormMessage className={'mt-1 text-tiny'}></FormMessage>
                                 </FormItem>
                             )}
                         />
@@ -200,12 +241,11 @@ export default function SignupPage() {
                                                variant={'underlined'}
                                                isRequired
                                                label={'First Name'}
-                                               className={'max-w-xs h-12 text-sm'}
-                                               errorMessage={'complete the field'}
+                                               className={'max-w-xs h-12 text-tiny'}
+                                               errorMessage={'Enter your first name'}
                                         />
                                     </FormControl>
 
-                                    <FormMessage className={'text-white text-sm'} />
                                 </FormItem>
                             )}
                         />
@@ -220,17 +260,38 @@ export default function SignupPage() {
                                                variant={'underlined'}
                                                isRequired
                                                label={'Last Name'}
-                                               className={'max-w-xs h-12 text-sm'}
-                                               errorMessage={'complete the field'}
+                                               className={'max-w-xs h-12 text-tiny'}
+                                               errorMessage={'Enter your lastname'}
                                         />
                                     </FormControl>
 
-                                    <FormMessage className={'text-white text-sm'} />
                                 </FormItem>
                             )}
                         />
+                        <FormField
+                            control={form.control}
+                            name="avatar"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormControl className="flex justify-center items-center">
+                                        <div>
+                                            <Avatar showFallback src={field.value} radius={'full'} />
+                                            <Input {...field}
+                                                   type={'text'}
+                                                   variant={'underlined'}
+                                                   label={'Avatar'}
+                                                   className={'max-w-xs h-12 text-tiny ml-2'}
+                                            />
+                                        </div>
+                                    </FormControl>
+                                </FormItem>
+
+                            )}
+                        />
+                        {userExist && <p className="text-teal-500 text-sm text-center">User already exists</p>}
+                        {userNameExist && <p className="text-teal-500 text-sm text-center">Username already exists</p>}
                         <div className="flex justify-center">
-                        <Button type="submit" className={'bg-teal-700 text-white font-semibold'}>Submit</Button>
+                            <Button type="submit" className={'bg-teal-700 text-white font-semibold'}>Submit</Button>
                         </div>
                     </form>
                 </Form>
