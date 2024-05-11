@@ -2,10 +2,7 @@
 
 import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, Button, Popover, PopoverTrigger, PopoverContent,Card, CardHeader, CardBody} from "@nextui-org/react";
 import {Image} from "@nextui-org/react";
-import {Diamond} from "@/icons/Diamond";
-import {Ruby} from "@/icons/Ruby";
-import {Emerald} from "@/icons/Emerald";
-import {Sapphire} from "@/icons/Sapphire";
+import {Icon} from "@/icons/Icon";
 
 
 export default function Home() {
@@ -49,7 +46,7 @@ export default function Home() {
                        <Popover placement="bottom" showArrow={true} >
                            <PopoverTrigger>
                                <Button isIconOnly aria-label="Like" className={'w-12 h-12 bg-sky-200 border-teal-600'} variant={'bordered'}>
-                                   <Diamond/>
+                                   <Icon src={'/diamond.png'}/>
                                </Button>
                            </PopoverTrigger>
                            <PopoverContent>
@@ -61,7 +58,7 @@ export default function Home() {
                        <Popover placement="bottom" showArrow={true} >
                            <PopoverTrigger>
                                <Button isIconOnly aria-label="Like" className={'w-12 h-12 bg-red-200 border-teal-600 ml-2'} variant={'bordered'}>
-                                   <Ruby/>
+                                   <Icon src={'/ruby.png'}/>
                                </Button>
                            </PopoverTrigger>
                            <PopoverContent>
@@ -73,7 +70,7 @@ export default function Home() {
                        <Popover placement="bottom" showArrow={true} >
                            <PopoverTrigger>
                                <Button isIconOnly aria-label="Like" className={'w-12 h-12 bg-emerald-300 border-teal-600 ml-2'} variant={'bordered'}>
-                                   <Emerald/>
+                                   <Icon src={'/emerald.png'}/>
                                </Button>
                            </PopoverTrigger>
                            <PopoverContent>
@@ -85,7 +82,7 @@ export default function Home() {
                        <Popover placement="bottom" showArrow={true} >
                            <PopoverTrigger>
                                <Button isIconOnly aria-label="Like" className={'w-12 h-12 bg-purple-300 border-teal-600  ml-2'} variant={'bordered'}>
-                                   <Sapphire/>
+                                   <Icon src={'/saphire.png'}/>
                                </Button>
                            </PopoverTrigger>
                            <PopoverContent>

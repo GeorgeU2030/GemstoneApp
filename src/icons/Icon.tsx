@@ -1,26 +1,28 @@
 import React from "react";
 import {Image} from "@nextui-org/react";
 
-interface HeartIconProps {
-  fill?: string;
-  filled?: boolean;
+interface IconProps {
+  src: string;
   size?: number;
   height?: number;
   width?: number;
-  label?: string;
 }
 
-export const Sapphire: React.FC<HeartIconProps> = ({
+export const Icon: React.FC<IconProps> = ({
+  src,
   size = 24,
   height = 24,
   width = 24,
 }) => {
   return (
       <Image
-          src="/saphire.png"
+          src={src}
           alt="Gemstone"
           width={size || width}
           height={size || height}
       />
   );
 };
+
+
+
