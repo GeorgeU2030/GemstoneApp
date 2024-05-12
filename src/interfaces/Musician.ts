@@ -10,7 +10,8 @@ interface MusicianDTO {
     best_position:number,
     rating:number,
     start_date_best_position:string,
-    end_date_best_position:string
+    end_date_best_position:string,
+    award_count:number,
 }
 
 export default MusicianDTO

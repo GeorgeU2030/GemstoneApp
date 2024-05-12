@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react";
+import React, {useEffect} from "react";
 import {
     Navbar,
     NavbarBrand,
@@ -14,26 +14,113 @@ import {
     Image,
     Card,
     CardFooter,
-    CardBody
+    CardBody,
+    Tooltip
 } from "@nextui-org/react";
-import {BarChart3, LogOut} from "lucide-react";
+import {BarChart3, LogOut, ArrowLeft, ArrowRight} from "lucide-react";
 import {useRouter} from "next/navigation";
+import Cookies from "js-cookie";
+import MusicianDTO from "@/interfaces/Musician";
+import {Icon} from "@/icons/Icon";
+import SongDTO from "@/interfaces/Song";
 
 export default function Menu(){
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [topMusicians, setTopMusicians] = React.useState<MusicianDTO[]>([]);
+    const [topMusiciansAwards, setTopMusiciansAwards] = React.useState<MusicianDTO[]>([]);
+    const [numberMusician, setNumberMusician] = React.useState(0);
+    const [latestSong, setLatestSong] = React.useState<SongDTO | null>(null);
 
     const router = useRouter()
-    const menuItems = [
-        "Songs",
-        "Ranking",
-        "Awards",
-        "History",
-        "Items",
-        "Log Out",
-    ];
+
+    const menuItems = {
+        "Songs": "/songs",
+        "Ranking": "/ranking",
+        "Awards": "/awards",
+        "History": "/history",
+        "Items": "/items",
+        "Log Out": "/logout",
+    };
+
+    const next = () => {
+        setNumberMusician(numberMusician+1)
+    }
+
+    const previous = () => {
+        setNumberMusician(numberMusician-1)
+    }
 
     const gotoRoute = (route: string) => {
         router.push(`/${route}`)
+    }
+
+
+    useEffect(()=>{
+        const token = Cookies.get('token')
+        if(token){
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/music/top-musicians-points/`, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            }).then(response => {
+                if(!response.ok){
+                    throw new Error('Failed to fetch')
+                }
+                return response.json()
+            }).then((data:MusicianDTO[])=>{
+                setTopMusicians(data)
+            })
+
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/music/top-musicians-awards/`, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            }).then(response => {
+                if(!response.ok){
+                    throw new Error('Failed to fetch')
+                }
+                return response.json()
+            }).then((data:MusicianDTO[])=>{
+                setTopMusiciansAwards(data)
+            })
+
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/music/latest-song/`, {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
+            }).then(response => {
+                if(!response.ok){
+                    return;
+                }
+                return response.json()
+            }).then((data:SongDTO)=>{
+                setLatestSong(data)
+            })
+
+        }else {
+            Cookies.remove('token')
+            router.push('/login')
+        }
+    },[router])
+
+
+    const getColor = (index: number) => {
+        switch(index){
+            case 0:
+                return 'text-teal-900'
+            case 1:
+                return 'text-emerald-800'
+            case 2:
+                return 'text-cyan-800'
+            default:
+                return 'bg-red-500'
+        }
+    }
+
+    console.log(topMusicians)
+    const handleLogout = () => {
+        Cookies.remove('token')
+        router.push('/login')
     }
 
     return (
@@ -79,30 +166,31 @@ export default function Menu(){
 
                 <NavbarContent justify="end">
                     <NavbarItem>
-                        <Button as={Link} href="#" variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
+                        <Button as={Link} variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
                                 isIconOnly
                         >
                             <BarChart3 size={20}/>
                         </Button>
                     </NavbarItem>
                     <NavbarItem className="hidden lg:flex">
-                        <Button as={Link} href="#" variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
+                        <Button as={Link}  variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
                                 radius={"full"}
                         >
                             History
                         </Button>
                     </NavbarItem>
                     <NavbarItem className={'hidden lg:flex'}>
-                        <Button as={Link} href="#" variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
+                        <Button as={Link} variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
                                 radius={"full"}
                         >
                             Items
                         </Button>
                     </NavbarItem>
                     <NavbarItem className={'hidden lg:flex'}>
-                        <Button as={Link} href="#" variant="flat"
+                        <Button as={Link}  variant="flat"
                                 className={'bg-teal-900 text-white font-semibold px-3'}
                                 isIconOnly
+                                onClick={handleLogout}
                         >
                             <LogOut size={20}/>
                         </Button>
@@ -110,11 +198,11 @@ export default function Menu(){
                 </NavbarContent>
 
                 <NavbarMenu>
-                    {menuItems.map((item, index) => (
+                    {Object.entries(menuItems).map(([item, path], index) => (
                         <NavbarMenuItem key={`${item}-${index}`}>
                             <Link
-                                className={`w-full font-semibold ${index === menuItems.length - 1 ? 'text-red-500' : 'text-teal-900'}`}
-                                href="#"
+                                className={`w-full font-semibold ${index === Object.keys(menuItems).length - 1 ? 'text-red-500' : 'text-teal-900'}`}
+                                onClick={path === '/logout' ? handleLogout : () => router.push(path)}
                                 size="lg"
                             >
                                 {item}
@@ -124,30 +212,77 @@ export default function Menu(){
                 </NavbarMenu>
             </Navbar>
 
-            <div className={'flex flex-col md:flex-row w-full flex-grow h-full bg-purple-600'}>
-                <section className={'w-full md:w-1/2 bg-red-500 mb-4 mt-4 md:mt-0 md:mb-0 flex justify-center items-center'}>
-                    <div className={'w-1/2'}>
-                        <h1 className={'text-center mb-2'}>Your Top 3 Artist</h1>
-                        <Card className="py-4">
-                            <CardBody className="overflow-visible py-2 flex justify-center items-center">
+            <div className={'flex flex-col md:flex-row w-full flex-grow h-full '}>
+                {topMusicians && topMusicians.length > 0 && topMusiciansAwards.length > 0 ? (
+                    <>
+                <section className={'w-full md:w-1/2 mb-4 mt-4 md:mt-0 md:mb-0 flex justify-center items-center'}>
+                    <div className={'w-5/6 lg:w-1/2'}>
+                        <h1 className={'text-center mb-2 text-teal-800 font-semibold text-xl'}>Your Top 3 Artist</h1>
+                        <Card className="py-4 bg-slate-200">
+                            <CardBody className="overflow-visible py-2 flex justify-center items-center ">
                                 <Image
+                                    isZoomed
                                     alt="Card background"
-                                    className="object-cover rounded-xl"
-                                    src="https://nextui.org/images/hero-card-complete.jpeg"
-                                    width={270}
+                                    className="object-cover rounded-xl h-72 w-72"
+                                    src={topMusicians[numberMusician]?.photo}
                                 />
                             </CardBody>
-                            <CardFooter className="pb-0 pt-2 px-4 flex-col items-start">
-                                <p className="text-tiny uppercase font-bold">Daily Mix</p>
-                                <small className="text-default-500">12 Tracks</small>
-                                <h4 className="font-bold text-large">Frontend Radio</h4>
+                            <CardFooter className="pb-0 pt-2 px-4 flex-col items-center">
+                                <h4 className={`font-bold text-large ${getColor(numberMusician)}`}>{numberMusician+1}. {topMusicians[numberMusician]?.name}</h4>
                             </CardFooter>
                         </Card>
+
+                        <div className={'flex justify-center mt-4'}>
+                            {numberMusician > 0 ? <Button onClick={previous} className={'bg-teal-700 text-white '} isIconOnly><ArrowLeft /></Button>: null}
+                            {numberMusician < 2 ? <Button onClick={next} className={'bg-teal-700 text-white ml-2'} isIconOnly><ArrowRight /></Button> : null}
+                        </div>
                     </div>
                 </section>
-                <section className={'w-full md:w-1/2 bg-yellow-500'}>
+                <section className={'w-full md:w-1/2 mt-6 md:mt-0 flex flex-col justify-center '}>
+                        {latestSong ? <div className={'flex flex-col justify-center'}>
 
+                        </div> : <div className={'flex md:w-full justify-center mb-8'}>
+                            <div className={'w-4/5'}>
+                            <h1 className={'text-center text-teal-800 mb-6 font-semibold'}>You do not have Song, start adding one in Songs </h1>
+                            </div>
+                            </div>
+                        }
+
+                        <div className={'flex flex-col justify-center mb-6 md:mb-6'}>
+                            <h1 className={'text-center mb-2 font-semibold text-teal-900'}>Musicians with Most Awards</h1>
+                            <div className={'flex flex-row justify-center'}>
+                                <Image
+                                    isZoomed
+                                    src={topMusiciansAwards.length > 0 ? topMusiciansAwards[0]?.photo : '/gemstone.png'}
+                                    alt="Image awards" className='rounded-lg border w-36 h-36 ml-2 object-cover'/>
+                                <Image
+                                    isZoomed
+                                    src={topMusiciansAwards.length > 1 ? topMusiciansAwards[1]?.photo : '/gemstone.png'}
+                                    alt="Image awards" className='rounded-lg border w-36 h-36 ml-2 object-cover'/>
+                                <Image
+                                    isZoomed
+                                    src={topMusiciansAwards.length > 2 ? topMusiciansAwards[2]?.photo : '/gemstone.png'}
+                                    alt="Image awards"
+                                    className='rounded-lg border w-36 h-36 ml-2 mr-2 object-cover'/>
+                            </div>
+                            <div className={'flex flex-row justify-center mt-4'}>
+                                <Tooltip content={topMusiciansAwards[0]?.name}>
+                                    <Button disabled className={'bg-emerald-100 w-36 border-2 border-sky-700 text-tiny'}><Icon src={'/grammy.png'}/><span className={'text-lg'}>{topMusiciansAwards[0]?.award_count}</span>Awards</Button>
+                                </Tooltip>
+                                <Tooltip content={topMusiciansAwards[1]?.name}>
+                                    <Button disabled className={'bg-emerald-100 w-36 ml-2 border-2 border-sky-700 text-tiny'}><Icon src={'/grammy.png'}/><span className={'text-lg'}>{topMusiciansAwards[1]?.award_count}</span> Awards</Button>
+                                </Tooltip>
+                                <Tooltip content={topMusiciansAwards[2]?.name}>
+                                    <Button disabled className={'bg-emerald-100 w-36 ml-2 border-2 border-sky-700 text-tiny'}><Icon src={'/grammy.png'}/><span className={'text-lg'}>{topMusiciansAwards[2]?.award_count}</span> Awards</Button>
+                                </Tooltip>
+                            </div>
+                        </div>
                 </section>
+                </>) :
+                    <div className={'flex flex-grow items-center justify-center '}>
+                        <h1 className={'w-4/5 text-center text-teal-900'}>Welcome to Gemstone , start creating your three favorite Musicians, this App works adding your favorite Song for Week with your respect musician , Enjoy it! &#128512;</h1>
+                    </div>
+                }
             </div>
         </div>
     );
