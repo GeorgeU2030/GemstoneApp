@@ -9,7 +9,7 @@ import {
 import React from "react";
 import {Icon} from "@/icons/Icon";
 import {useRouter} from "next/navigation";
-import {ArrowLeft} from "lucide-react"
+import {ArrowLeft, Music} from "lucide-react"
 
 interface NavBarGenericProps {
     text: string
@@ -44,12 +44,21 @@ export default function NavBarGeneric({text}: NavBarGenericProps){
             <NavbarContent justify="end">
                 <NavbarItem>
                     {text === 'My Ranking' &&
-                    <Button as={Link} variant="flat" startContent={<Icon src={'/singer.png'}/>}
-                    className={'bg-sky-600 text-white font-semibold'}
-                    onClick={()=>router.push('/new_musician')}
-                    >
-                        Add Musician
-                    </Button>
+                        <Button as={Link} variant="flat" startContent={<Icon src={'/singer.png'}/>}
+                        className={'bg-sky-600 text-white font-semibold'}
+                        onClick={()=>router.push('/new_musician')}
+                        >
+                            Add Musician
+                        </Button>
+                    }
+                    {
+                        text === 'Your Songs' &&
+                        <Button as={Link} variant="flat" startContent={<Music/>}
+                        className={'bg-sky-600 text-white font-semibold'}
+                        onClick={()=>router.push('/new_song')}
+                        >
+                            Add Song
+                        </Button>
                     }
                 </NavbarItem>
             </NavbarContent>

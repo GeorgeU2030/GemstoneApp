@@ -60,7 +60,7 @@ export default function NewMusician(){
             router.push('/login')
         }
 
-    },[])
+    },[router])
 
 
     const form = useForm<z.infer<typeof CreateMusician>>({
@@ -78,7 +78,7 @@ export default function NewMusician(){
             ...data,
             profile: id
         }
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/music/api/v1/musicians/`,{
+        fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/music/api/v1/musicians/`,{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

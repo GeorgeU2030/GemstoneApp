@@ -148,7 +148,7 @@ export default function Menu(){
                         <p className="font-bold text-inherit text-teal-950 ml-2">Gemstone</p>
                     </NavbarBrand>
                     <NavbarItem isActive>
-                        <Link href="#" aria-current={'page'} className={'text-white'}>
+                        <Link onClick={()=>gotoRoute('songs')} aria-current={'page'} className={'text-white cursor-pointer'}>
                             Songs
                         </Link>
                     </NavbarItem>
