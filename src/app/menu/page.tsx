@@ -17,7 +17,7 @@ import {
     CardBody,
     Tooltip
 } from "@nextui-org/react";
-import {BarChart3, LogOut, ArrowLeft, ArrowRight} from "lucide-react";
+import {BarChart3, LogOut, ArrowLeft, ArrowRight, CirclePlay} from "lucide-react";
 import {useRouter} from "next/navigation";
 import Cookies from "js-cookie";
 import MusicianDTO from "@/interfaces/Musician";
@@ -26,6 +26,7 @@ import SongDTO from "@/interfaces/Song";
 
 export default function Menu(){
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const [loading, setLoading] = React.useState(true)
     const [topMusicians, setTopMusicians] = React.useState<MusicianDTO[]>([]);
     const [topMusiciansAwards, setTopMusiciansAwards] = React.useState<MusicianDTO[]>([]);
     const [numberMusician, setNumberMusician] = React.useState(0);
@@ -95,6 +96,8 @@ export default function Menu(){
                 return response.json()
             }).then((data:SongDTO)=>{
                 setLatestSong(data)
+            }).finally(()=>{
+                setLoading(false)
             })
 
         }else {
@@ -117,7 +120,6 @@ export default function Menu(){
         }
     }
 
-    console.log(topMusicians)
     const handleLogout = () => {
         Cookies.remove('token')
         router.push('/login')
@@ -213,7 +215,9 @@ export default function Menu(){
             </Navbar>
 
             <div className={'flex flex-col md:flex-row w-full flex-grow h-full '}>
-                {topMusicians && topMusicians.length > 0 && topMusiciansAwards.length > 0 ? (
+                {loading ? null : (
+                
+                topMusicians && topMusicians.length > 0 && topMusiciansAwards.length > 0 ? (
                     <>
                 <section className={'w-full md:w-1/2 mb-4 mt-4 md:mt-0 md:mb-0 flex justify-center items-center'}>
                     <div className={'w-5/6 lg:w-1/2'}>
@@ -239,7 +243,34 @@ export default function Menu(){
                     </div>
                 </section>
                 <section className={'w-full md:w-1/2 mt-6 md:mt-0 flex flex-col justify-center '}>
-                        {latestSong ? <div className={'flex flex-col justify-center'}>
+                        {latestSong ? <div className={'flex flex-col items-center mb-3'}>
+                            <div className='text-center mt-2 font-init text-xl text-teal-800 font-semibold mb-2'>
+                                Last Song
+                            </div>
+                            
+                            <div className="w-3/4 bg-gradient-to-tr from-teal-500 to-green-500 flex mb-3 rounded-lg">
+                                <div className={'flex justify-center items-center mt-2 mb-2'}>
+                                    <Image src={latestSong?.album} alt="Image Song" className={'rounded-lg border w-20 h-20 ml-2 object-cover'}/>
+                                </div>
+                                <div className="flex flex-col w-3/4">
+                                    <h1 className='mt-5 ml-3 text-2xl text-white font-init font-semibold'>{latestSong.name}</h1>
+                                    <label className='mt-2 ml-3 font-init font-normal overflow-hidden line-clamp-2'>
+                                    {latestSong.musicians && latestSong.musicians.map((musician, index) => (
+                                    <span key={index}>
+                                    {musician.name}
+                                    {index < latestSong.musicians.length - 1 ? ', ' : ''} 
+                                    </span>
+                                    ))}
+                                    </label>
+                                </div>
+                                <div className="flex items-center mr-2">
+                                    <Button isIconOnly color="primary"
+                                    onClick={()=>{router.push(`/songs/${latestSong.id}`)}}
+                                    >
+                                        <CirclePlay />
+                                    </Button>
+                                </div>
+                            </div>
 
                         </div> : <div className={'flex md:w-full justify-center mb-8'}>
                             <div className={'w-4/5'}>
@@ -282,7 +313,7 @@ export default function Menu(){
                     <div className={'flex flex-grow items-center justify-center '}>
                         <h1 className={'w-4/5 text-center text-teal-900'}>Welcome to Gemstone , start creating your three favorite Musicians, this App works adding your favorite Song for Week with your respect musician , Enjoy it! &#128512;</h1>
                     </div>
-                }
+                )}
             </div>
         </div>
     );
