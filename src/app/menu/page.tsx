@@ -248,7 +248,7 @@ export default function Menu(){
                                 Last Song
                             </div>
                             
-                            <div className="w-3/4 bg-gradient-to-tr from-teal-500 to-green-500 flex mb-3 rounded-lg">
+                            <div className="w-full md:w-3/4 bg-gradient-to-tr from-teal-500 to-green-500 flex mb-3 rounded-lg">
                                 <div className={'flex justify-center items-center mt-2 mb-2'}>
                                     <Image src={latestSong?.album} alt="Image Song" className={'rounded-lg border w-20 h-20 ml-2 object-cover'}/>
                                 </div>
