@@ -1,15 +1,16 @@
 "use client"
 
 import NavBarGeneric from "@/elements/NavBarGeneric";
-import {useState, useEffect } from "react";
-import Cookies from "js-cookie";
 import MusicianDTO from "@/interfaces/Musician";
-import React from "react";
-import {useRouter} from 'next/navigation'
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar} from "@nextui-org/react";
-import {Icon} from "@/icons/Icon";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar, Button } from "@nextui-org/react";
+import { Icon } from "@/icons/Icon";
+import { Headphones } from "lucide-react";
 
-export default function Ranking(){
+
+export default function Awards(){
 
     const columns = [
         {
@@ -25,31 +26,32 @@ export default function Ranking(){
             label: "Name",
         },
         {
-            key: "flag",
-            label: "Flag",
+            key: "country",
+            label: "Country",
         },
         {
-            key: "points",
-            label: "Points",
+            key: "awards",
+            label: "Awards",
         },
         {
-            key:"rating",
-            label:"Rating",
-        },
-        {
-            key: "gem",
-            label: "Gem",
-        },
+            key: "description",
+            label: "",
+        }
     ];
 
-    const router = useRouter();
-    const [musicians, setMusicians] = useState<MusicianDTO[]>([]);
-    const [loaded, setLoaded] = useState<boolean>(false);
+    interface MusicianAward extends MusicianDTO {
+        position: number;
+        description: string;
+    }
+
+    const [musicians, setMusicians] = useState<MusicianDTO[]>([])
+    const [loaded, setLoaded] = useState<boolean>(false)
+    const router = useRouter()
 
     useEffect(() => {
         const token = Cookies.get('token');
         if(token) {
-            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/music/ranking`, {
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/music/ranking_awards`, {
                 headers: {
                     'Authorization': `Token ${token}`
                 }
@@ -71,8 +73,7 @@ export default function Ranking(){
 
     },[router]);
 
-
-    const renderCell = React.useCallback((user: MusicianWithPosition, columnKey: keyof MusicianWithPosition, positionnumber?:number) => {
+    const renderCell = React.useCallback((user: MusicianAward, columnKey: keyof MusicianAward, positionnumber?:number) => {
 
         const cellValue = user[columnKey];
 
@@ -97,48 +98,43 @@ export default function Ranking(){
                         <span className={'text-center font-semibold'}>{user.name}</span>
                     </div>
                 );
-            case "flag":
+            case "country":
                 return (
-                    <div className={'flex justify-center'}>
+                    <div className={'flex justify-center items-center'}>
                         <Avatar
                           src={user.flag}
                           radius={'sm'}
                         />
+                        <h3 className={'text-tiny ml-2'}>{user.country}</h3>
                     </div>
                 );
-            case "points":
+            case "awards":
                 return (
-                    <div className={'flex justify-center'}>
-                        <span className={'text-xl'}>{user.points}</span>
+                    <div className={'flex justify-center items-center'}>
+                        <Icon src='/grammy.png'/>
+                        <h3 className={'text-2xl ml-4'}>{user.awards.length}</h3>
                     </div>
-                )
-            case "rating":
+                );
+            case "description":
                 return (
-                    <div className={'flex justify-center'}>
-                        <span className={'text-xl'}>{user.rating}</span>
+                    <div className={'flex justify-center items-center'}>
+                        <Button isIconOnly className="bg-teal-600"
+                        onClick={() => router.push(`/musician/${user.id}`)}
+                        >
+                            <Headphones className="text-white" />
+                        </Button>
                     </div>
-                )
-            case "gem":
-                return (
-                    <div className={'flex justify-center'}>
-                        {user.rating >= 95 ? <Icon src={'/diamond.png'}/> : user.rating > 85 && user.rating <= 95 ? <Icon src={'/ruby.png'}/> : user.rating > 78 && user.rating <=85 ? <Icon src={'/emerald.png'}/> : user.rating >=70 && user.rating < 79 ? <Icon src={'/saphire.png'}/> : <Icon src={'/interrogation.png'}/>}
-                    </div>
-                )
+                );
 
             default:
                 return cellValue;
         }
     }, []);
 
-    interface MusicianWithPosition extends MusicianDTO {
-        position: number;
-        gem:string;
-    }
-
     return (
-        <div className={'min-h-screen bg-sky-100 flex flex-col'}>
-            <NavBarGeneric text={'My Ranking'}/>
-            <div className={'flex-grow flex flex-col items-center'}>
+        <div className="min-h-screen bg-emerald-100 flex flex-col">
+           <NavBarGeneric text={'Your Awards'}/>
+                <div className={'flex-grow flex flex-col items-center'}>
                 {loaded && ( musicians.length > 0 ? <section className={'w-full md:w-4/5 mt-3'}>
 
                         <Table aria-label="Example table with dynamic content"
@@ -148,19 +144,19 @@ export default function Ranking(){
                                 {(column) => (
                                     <TableColumn
                                         key={column.key}
-                                        style={column.key === 'position' ? { width: '20px' } : {}}
+                                        style={column.key === 'position' ? { width: '20px' } : column.key == 'description' ? {width:'12px'}:{}}
                                         className={'text-center bg-teal-600 text-white'}
                                     >
                                         {column.label}
                                     </TableColumn>
                                 )}
                             </TableHeader>
-                            <TableBody items={musicians.map((item, index) => ({...item, position: index + 1})) as MusicianWithPosition[]}>
-                                {(item: MusicianWithPosition) => (
+                            <TableBody items={musicians.map((item, index) => ({...item, position: index + 1})) as MusicianAward[]}>
+                                {(item: MusicianAward) => (
                                     <TableRow key={item.id}>
                                         {columns.map((column) => (
                                             <TableCell key={column.key}>
-                                                {renderCell(item, column.key as keyof MusicianWithPosition, column.key === 'position' ? item.position : undefined)}
+                                                {renderCell(item, column.key as keyof MusicianAward, column.key === 'position' ? item.position : undefined)}
                                             </TableCell>
                                         ))}
                                     </TableRow>
@@ -173,7 +169,7 @@ export default function Ranking(){
                             a musician click in the button ... ⬆️</h1>
                     </section>
                 )}
-            </div>
+                </div>
         </div>
     )
 }

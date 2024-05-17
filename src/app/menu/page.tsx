@@ -160,7 +160,7 @@ export default function Menu(){
                         </Link>
                     </NavbarItem>
                     <NavbarItem isActive>
-                        <Link href="#" aria-current={'page'} className={'text-white'}>
+                        <Link onClick={()=>gotoRoute('awards')} aria-current={'page'} className={'text-white cursor-pointer'}>
                             Awards
                         </Link>
                     </NavbarItem>
