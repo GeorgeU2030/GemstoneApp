@@ -121,7 +121,7 @@ export default function Ranking(){
             case "gem":
                 return (
                     <div className={'flex justify-center'}>
-                        {user.rating >= 95 ? <Icon src={'/diamond.png'}/> : user.rating > 85 && user.rating <= 95 ? <Icon src={'/ruby.png'}/> : user.rating > 78 && user.rating <=85 ? <Icon src={'/emerald.png'}/> : user.rating >=70 && user.rating < 79 ? <Icon src={'/saphire.png'}/> : <Icon src={'/interrogation.png'}/>}
+                        {user.rating > 95 ? <Icon src={'/diamond.png'}/> : user.rating > 85 && user.rating <= 95 ? <Icon src={'/ruby.png'}/> : user.rating > 78 && user.rating <=85 ? <Icon src={'/emerald.png'}/> : user.rating >=70 && user.rating < 79 ? <Icon src={'/saphire.png'}/> : <Icon src={'/interrogation.png'}/>}
                     </div>
                 )
 
