@@ -24,6 +24,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.4",
+    "react-hot-toast": "^2.4.1",
     "react-select": "^5.8.0",
     "react-youtube": "^10.1.0",
     "tailwind-merge": "^2.3.0",

@@ -182,7 +182,7 @@ export default function Menu(){
                         </Button>
                     </NavbarItem>
                     <NavbarItem className={'hidden lg:flex'}>
-                        <Button as={Link} variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
+                        <Button as={Link} onClick={()=>gotoRoute('items')} variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
                                 radius={"full"}
                         >
                             Items

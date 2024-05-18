@@ -110,7 +110,7 @@ export default function Musician(){
                     </div>
                     <div className='cursor-default flex flex-col items-center bg-slate-300 py-2 mt-4 w-5/6 md:w-1/3 rounded-lg'>
 
-                        <h2 className={`text-white font-semibold text-center text-2xl ${musician ? getTextColor(musician.rating):''}`}>
+                        <h2 className={`font-semibold text-center text-2xl ${musician ? getTextColor(musician.rating):''}`}>
                             # {musician?.current_position} <span className="text-base">in your Ranking</span>
                         </h2>
                         <h2 className={`${musician ? getTextColor(musician.rating): ''} font-semibold text-center text-2xl`}>
