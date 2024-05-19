@@ -66,7 +66,7 @@ export default function Items(){
     }
 
 
-    const handleAddTroph = async (points:number,classification: string) => {
+    const handleAddTroph = async (points:number,classification: string, semester_id:number) => {
         const musiciansIds = selectedMusicians.map((musician) => musician.id); 
 
         if (musiciansIds.length === 0) {
@@ -85,6 +85,7 @@ export default function Items(){
                 musicianIds: musiciansIds,
                 pointsToAdd: points,
                 classification: classification,
+                semesterId: semester_id
             }),
         });
 
@@ -279,9 +280,9 @@ export default function Items(){
                     </button>
                 </div>
 
-                <div className='grid grid-cols-2 gap-4 w-4/5 mt-6'>
+                <div className='grid grid-cols-3 gap-4 w-4/5 mt-6'>
                     <button className='bg-[#dfce1e] flex flex-col items-center rounded-lg'
-                    onClick={() => handleAddTroph(200,'Year')}
+                    onClick={() => handleAddTroph(200,'Year',0)}
                     >
                         <div className='bg-slate-300 mt-1 rounded-lg'>
                         <Image src='/troph.png' className='w-16 h-16'/>
@@ -290,12 +291,23 @@ export default function Items(){
                     </button>
 
                     <button className='bg-[#f2e027] flex flex-col items-center rounded-lg'
-                    onClick={() => handleAddTroph(100,'Six Month')}
+                    onClick={() => handleAddTroph(100,'Six Month',1)}
                     >
                         <div className='bg-slate-300 mt-1 rounded-lg'>
                         <Image src='/winner.png' className='w-16 h-16'/>
                         </div>
-                        <h1 className='font-semibold mt-1'>Six Month Award</h1>
+                        <h1 className='font-semibold mt-1'>Six Month Award </h1>
+                        <h1 className='text-tiny'>Semester 1</h1>
+                    </button>
+
+                    <button className='bg-[#f2e027] flex flex-col items-center rounded-lg'
+                    onClick={() => handleAddTroph(100,'Six Month',2)}
+                    >
+                        <div className='bg-slate-300 mt-1 rounded-lg'>
+                        <Image src='/winner.png' className='w-16 h-16'/>
+                        </div>
+                        <h1 className='font-semibold mt-1'>Six Month Award </h1>
+                        <h1 className='text-tiny'>Semester 2</h1>
                     </button>
                     
                 </div>
