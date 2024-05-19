@@ -116,7 +116,7 @@ export default function HistoryPage() {
             case "musician_photo":
                 return (
                     <div className="flex justify-center">
-                        <Avatar src={item.musician_photo} size="sm" />
+                        <Avatar src={item.musician_photo} size="md" />
                     </div>
                 );
             case "type_award":
