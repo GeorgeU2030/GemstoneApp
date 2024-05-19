@@ -109,7 +109,7 @@ export default function RankDetails({params}:{params:{period:string}}) {
            <NavBarGeneric text={decodedPeriod}/>
            <div className={'flex-grow flex flex-col items-center'}>
                 {loaded && ( ranks.length > 0 ? <section className={'w-full md:w-4/5 mt-3'}>
-
+                <div className="overflow-auto max-h-[30rem]">
                 <Table aria-label="Example table with dynamic content"
                     selectionMode={'single'}
                     
@@ -125,7 +125,7 @@ export default function RankDetails({params}:{params:{period:string}}) {
                             </TableColumn>
                         )}
                     </TableHeader>
-                    <TableBody items={ranks.map((item, index) => ({...item, position: index + 1})) as Rank[]}>
+                    <TableBody items={ranks.map((item) => ({...item})) as Rank[]}>
                         {(item: Rank) => (
                             <TableRow key={item.id}>
                                 {columns.map((column) => (
@@ -137,6 +137,7 @@ export default function RankDetails({params}:{params:{period:string}}) {
                         )}
                     </TableBody>
                 </Table>
+                </div>
                 </section> :
                 <section className={'flex-grow flex flex-col items-center justify-center'}>
                 <h1 className={'text-teal-950 text-2xl text-center'}>You do not have Ranks yet...</h1>

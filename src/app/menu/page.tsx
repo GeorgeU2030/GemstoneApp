@@ -168,7 +168,7 @@ export default function Menu(){
 
                 <NavbarContent justify="end">
                     <NavbarItem>
-                        <Button as={Link} variant="flat" className={'bg-sky-600 text-white font-semibold px-3'}
+                        <Button as={Link} variant="flat" onClick={()=> gotoRoute('stats')} className={'bg-sky-600 text-white font-semibold px-3'}
                                 isIconOnly
                         >
                             <BarChart3 size={20}/>

@@ -6,8 +6,9 @@ import Cookies from "js-cookie";
 import MusicianDTO from "@/interfaces/Musician";
 import React from "react";
 import {useRouter} from 'next/navigation'
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar} from "@nextui-org/react";
+import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar, Input} from "@nextui-org/react";
 import {Icon} from "@/icons/Icon";
+import { Search } from "lucide-react";
 
 export default function Ranking(){
 
@@ -45,6 +46,7 @@ export default function Ranking(){
     const router = useRouter();
     const [musicians, setMusicians] = useState<MusicianDTO[]>([]);
     const [loaded, setLoaded] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>('');
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -141,6 +143,20 @@ export default function Ranking(){
             <div className={'flex-grow flex flex-col items-center'}>
                 {loaded && ( musicians.length > 0 ? <section className={'w-full md:w-4/5 mt-3'}>
 
+                <div className="flex justify-end">
+                    <div className="w-1/3"> 
+                        <Input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Search by name"
+                        className="p-2 "
+                        endContent={<Search className="text-teal-800"/>}
+                        />
+                    </div>
+                </div>
+
+                        <div className="overflow-auto max-h-[28rem]">
                         <Table aria-label="Example table with dynamic content"
                                selectionMode={'single'}
                         >
@@ -155,7 +171,7 @@ export default function Ranking(){
                                     </TableColumn>
                                 )}
                             </TableHeader>
-                            <TableBody items={musicians.map((item, index) => ({...item, position: index + 1})) as MusicianWithPosition[]}>
+                            <TableBody items={musicians.filter(musician => musician.name.startsWith(search)).map((item, index) => ({...item, position: index + 1})) as MusicianWithPosition[]}>
                                 {(item: MusicianWithPosition) => (
                                     <TableRow key={item.id}>
                                         {columns.map((column) => (
@@ -167,6 +183,7 @@ export default function Ranking(){
                                 )}
                             </TableBody>
                         </Table>
+                        </div>
                     </section> :
                     <section className={'flex-grow flex flex-col items-center justify-center'}>
                         <h1 className={'text-teal-950 text-2xl text-center'}>You do not have musicians, you can add

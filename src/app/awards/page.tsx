@@ -5,9 +5,9 @@ import MusicianDTO from "@/interfaces/Musician";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar, Button } from "@nextui-org/react";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Avatar, Button, Input } from "@nextui-org/react";
 import { Icon } from "@/icons/Icon";
-import { Headphones } from "lucide-react";
+import { Headphones, Search } from "lucide-react";
 
 
 export default function Awards(){
@@ -47,6 +47,7 @@ export default function Awards(){
     const [musicians, setMusicians] = useState<MusicianDTO[]>([])
     const [loaded, setLoaded] = useState<boolean>(false)
     const router = useRouter()
+    const [search, setSearch] = useState<string>('')
 
     useEffect(() => {
         const token = Cookies.get('token');
@@ -100,12 +101,16 @@ export default function Awards(){
                 );
             case "country":
                 return (
-                    <div className={'flex justify-center items-center'}>
+                    <div className={'flex justify-center'}>
+                        <div className="flex justify-end w-1/2 ">
                         <Avatar
                           src={user.flag}
                           radius={'sm'}
                         />
+                        </div>
+                        <div className="flex items-center w-1/2 ">
                         <h3 className={'text-tiny ml-2'}>{user.country}</h3>
+                        </div>
                     </div>
                 );
             case "awards":
@@ -136,7 +141,20 @@ export default function Awards(){
            <NavBarGeneric text={'Your Awards'}/>
                 <div className={'flex-grow flex flex-col items-center'}>
                 {loaded && ( musicians.length > 0 ? <section className={'w-full md:w-4/5 mt-3'}>
+                <div className="flex justify-end">
+                    <div className="w-1/3"> 
+                        <Input
+                        type="text"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Search by name"
+                        className="p-2 "
+                        endContent={<Search className="text-teal-800"/>}
+                        />
+                    </div>
+                </div>
 
+                        <div className="overflow-auto max-h-[28rem]">
                         <Table aria-label="Example table with dynamic content"
                                selectionMode={'single'}
                         >
@@ -151,7 +169,7 @@ export default function Awards(){
                                     </TableColumn>
                                 )}
                             </TableHeader>
-                            <TableBody items={musicians.map((item, index) => ({...item, position: index + 1})) as MusicianAward[]}>
+                            <TableBody items={musicians.filter(musician => musician.name.startsWith(search)).map((item, index) => ({...item, position: index + 1})) as MusicianAward[]}>
                                 {(item: MusicianAward) => (
                                     <TableRow key={item.id}>
                                         {columns.map((column) => (
@@ -163,6 +181,7 @@ export default function Awards(){
                                 )}
                             </TableBody>
                         </Table>
+                        </div>
                     </section> :
                     <section className={'flex-grow flex flex-col items-center justify-center'}>
                         <h1 className={'text-teal-950 text-2xl text-center'}>You do not have musicians, you can add

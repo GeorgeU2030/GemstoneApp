@@ -5,9 +5,9 @@ import React, {useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import {useRouter} from "next/navigation"
 import SongDTO from "@/interfaces/Song";
-import {Avatar, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button} from "@nextui-org/react";
+import {Avatar, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Input} from "@nextui-org/react";
 import { Icon } from "@/icons/Icon";
-import { CirclePlay } from "lucide-react";
+import { CirclePlay, Search } from "lucide-react";
 
 export default function Songs(){
 
@@ -57,6 +57,7 @@ export default function Songs(){
     const [songs, setSongs] = useState<SongDTO[]>([])
     const router = useRouter()
     const [loaded, setLoaded] = useState<boolean>(false)
+    const [search, setSearch] = useState<string>('')
 
     useEffect(()=>{
         const token = Cookies.get('token')
@@ -105,7 +106,7 @@ export default function Songs(){
                 );
             case "name":
                 return (
-                    <div className="flex flex-col">
+                    <div className="flex flex-col w-56">
                         <span className={'text-center font-semibold'}>{user.name}</span>
                     </div>
                 );
@@ -117,10 +118,10 @@ export default function Songs(){
                 )
             case "musicians":
             return (
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="flex justify-center w-56">
                     {user.musicians.map((musician, index) => (
                         <div key={index}>
-                            <h1>{musician.name}</h1>
+                            <h1 className="text-center">{musician.name}</h1>
                         </div>
                     )).reduce((prev:any, curr:any, index:any) => {
                         return index === 0 ? [curr] : [...prev, <span key={index}>, </span>, curr];
@@ -142,7 +143,7 @@ export default function Songs(){
             case "week":
                 return (
                     <div className={'flex justify-center'}>
-                        <span className="text-lg">{user.week}</span>
+                        <span className="text-center">{user.week}</span>
                     </div>
                 );
             case "release_year":
@@ -153,7 +154,7 @@ export default function Songs(){
                 );
             case "genre":
                 return (
-                    <div className={'flex justify-center'}>
+                    <div className={'flex justify-center w-24'}>
                         <span className="text-tiny">{user.genre}</span>
                     </div>
                 );
@@ -193,6 +194,19 @@ export default function Songs(){
             <div className={'flex-grow flex flex-col items-center'}>
             {loaded && (songs.length > 0 ? <section className={'w-full md:w-4/5 mt-3'}>
 
+            <div className="flex justify-end">
+                <div className="w-1/3"> 
+                    <Input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search by name"
+                    className="p-2 "
+                    endContent={<Search className="text-teal-800"/>}
+                    />
+                </div>
+            </div>
+            <div className="overflow-auto max-h-[28rem] mb-2">
             <Table aria-label="Example table with dynamic content"
                 selectionMode={'single'}
             >
@@ -206,7 +220,7 @@ export default function Songs(){
                         </TableColumn>
                     )}
                 </TableHeader>
-                <TableBody items={songs.map((item) => ({...item})) as SongColumn[]}>
+                <TableBody items={songs.filter(song => song.name.startsWith(search)).map((item) => ({...item})) as SongColumn[]}>
                     {(item: SongColumn) => (
                         <TableRow key={item.id}>
                             {columns.map((column) => (
@@ -218,6 +232,7 @@ export default function Songs(){
                     )}
                 </TableBody>
             </Table>
+            </div>
             </section> :
                     <section className={'flex-grow flex flex-col items-center justify-center'}>
                         <h1 className={'text-teal-950 text-2xl text-center'}>You do not have songs, you can add
