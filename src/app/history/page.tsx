@@ -62,10 +62,10 @@ export default function HistoryPage() {
     }, [])
 
     const getBackgroundColor = (type_award: number, description:string) => {
-        if (type_award == 4) {
+        if (type_award == 5) {
             return 'bg-[#dfce1e]'
         }
-        if (type_award == 3) {
+        if (type_award == 3 || type_award == 4) {
             return 'bg-[#f2e027]'
         }
         if (type_award == 2) {
@@ -122,7 +122,7 @@ export default function HistoryPage() {
             case "type_award":
                 return (
                     <div className={`flex justify-center ${getBackgroundColor(item.type_award, item.description)}`}>
-                        {item.type_award == 3 ? <Avatar src='/winner.png'/> : item.type_award == 4 ? <Avatar src='/troph.png'/> : null  }
+                        {item.type_award == 3 || item.type_award == 4? <Avatar src='/winner.png'/> : item.type_award == 5 ? <Avatar src='/troph.png'/> : null  }
                         {item.type_award == 2 && item.description == 'January' ? <Avatar src='/awjanuary.png'/>:null}
                         {item.type_award == 2 && item.description == 'February' ? <Avatar src='/awfebruary.png'/>:null}
                         {item.type_award == 2 && item.description == 'March' ? <Avatar src='/awmarch.png'/>:null}
