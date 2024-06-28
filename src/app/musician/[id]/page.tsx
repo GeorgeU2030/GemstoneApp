@@ -118,7 +118,7 @@ export default function Musician(){
                         </h2>
                         <div className='flex'>
                             <h3 className={`${musician ? getTextColor(musician.rating): ''} text-center text-base`}>
-                            <span className="text-sm">with Rating</span> {musician?.rating} 
+                            <span className="text-sm">with Rating</span> {musician?.rating !== undefined ? Math.round(musician.rating) : 'N/A'}
                             </h3>
                         </div>
                         <div className='mt-2 flex'>
@@ -190,7 +190,7 @@ export default function Musician(){
                                         <Image src='/troph.png' className='h-12'/>
                                     </td>
                                     <td className='text-center'>
-                                        Songs Awards
+                                        Year Awards
                                     </td>
                                     <td className='text-center font-semibold text-xl'>
                                         {awards.year}
@@ -204,7 +204,7 @@ export default function Musician(){
                                         <Image src='/winner.png' className='h-12'/>
                                     </td>
                                     <td className='text-center'>
-                                        Songs Awards
+                                        Six Month Awards
                                     </td>
                                     <td className='text-center font-semibold text-xl'>
                                         {awards.sixmonth}

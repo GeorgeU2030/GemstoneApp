@@ -11,6 +11,8 @@ interface MusicianDTO {
     rating:number,
     start_date_best_position:string,
     end_date_best_position:string,
+    points_semester:number,
+    points_year:number,
     award_count:number,
     awards: number[];
 }

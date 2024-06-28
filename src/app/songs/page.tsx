@@ -117,17 +117,17 @@ export default function Songs(){
                     </div>
                 )
             case "musicians":
-            return (
-                <div className="flex justify-center w-56">
+                return (
+                    <div className="flex flex-col justify-center w-48">
                     {user.musicians.map((musician, index) => (
                         <div key={index}>
-                            <h1 className="text-center">{musician.name}</h1>
+                        <h1 className="text-center">{musician.name}</h1>
                         </div>
                     )).reduce((prev:any, curr:any, index:any) => {
-                        return index === 0 ? [curr] : [...prev, <span key={index}>, </span>, curr];
+                        return index === 0 ? [curr] : [...prev, <br key={index} />, curr];
                     }, [])}
-                </div>
-            );
+                    </div>
+                );
             case "start_date":
                 return (
                     <div className={'flex justify-center'}>

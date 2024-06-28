@@ -141,7 +141,11 @@ export default function HistoryPage() {
             case "description":
                 return (
                     <div className="flex justify-center font-semibold text-teal-800 text-lg">
-                        {item.description}
+                        <h1 className="flex">
+                        {item.description} 
+                        {item.type_award == 3 ? <h1 className="ml-2"> I </h1> : null}
+                        {item.type_award == 4 ? <h1 className="ml-2"> II </h1> : null}
+                        </h1>
                     </div>
                 );
             case "year":
@@ -199,7 +203,7 @@ export default function HistoryPage() {
             <NavBarGeneric text="History"/>
             <div className={'flex-grow flex flex-col items-center'}>
                 {loaded && ( awards.length > 0 ? <section className={'w-full md:w-4/5 mt-3'}>
-
+                <div className="overflow-auto max-h-[30rem]">
                 <Table aria-label="Example table with dynamic content"
                     selectionMode={'single'}
                 >
@@ -226,6 +230,7 @@ export default function HistoryPage() {
                         )}
                     </TableBody>
                 </Table>
+                </div>
                 </section> :
                 <section className={'flex-grow flex flex-col items-center justify-center'}>
                 <h1 className={'text-teal-950 text-2xl text-center'}>You do not have Awards yet...</h1>

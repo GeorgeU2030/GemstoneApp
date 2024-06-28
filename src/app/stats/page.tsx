@@ -15,7 +15,7 @@ export default function StatsPage() {
     const columns = [
         { key: 'photo', label: 'Photo' },
         { key: 'name', label: 'Name' },
-        ...Array.from({ length: maxWeek }, (_, i) => ({ key: `week_${i + 1}`, label: `Week ${i + 1}` })).reverse(),
+        ...Array.from({ length: 10 }, (_, i) => ({ key: `week_${maxWeek - i}`, label: `Week ${maxWeek - i}` })),
     ]
 
     const maptoRank = (data: {musiciansData: Stats[], maxWeek: number}): {stats: Stats[], maxWeek: number} => {
@@ -71,7 +71,7 @@ export default function StatsPage() {
         if (key === 'name') {
             return (
                 <div className="flex justify-center w-48">
-                    <span className="font-semibold">{item.name}</span>
+                    <span className="font-semibold text-center">{item.name}</span>
                 </div>
             )
         }

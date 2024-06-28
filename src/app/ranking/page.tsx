@@ -41,6 +41,14 @@ export default function Ranking(){
             key: "gem",
             label: "Gem",
         },
+        {
+            key: "points_semester",
+            label: "Semester",
+        },
+        {
+            key: "points_year",
+            label: "Year",
+        }
     ];
 
     const router = useRouter();
@@ -117,13 +125,25 @@ export default function Ranking(){
             case "rating":
                 return (
                     <div className={'flex justify-center'}>
-                        <span className={'text-xl'}>{user.rating}</span>
+                        <span className={'text-xl'}>{Math.round(user.rating)}</span>
                     </div>
                 )
             case "gem":
                 return (
                     <div className={'flex justify-center'}>
                         {user.rating > 95 ? <Icon src={'/diamond.png'}/> : user.rating > 85 && user.rating <= 95 ? <Icon src={'/ruby.png'}/> : user.rating > 78 && user.rating <=85 ? <Icon src={'/emerald.png'}/> : user.rating >=70 && user.rating < 79 ? <Icon src={'/saphire.png'}/> : <Icon src={'/interrogation.png'}/>}
+                    </div>
+                )
+            case "points_semester":
+                return (
+                    <div className={'flex justify-center'}>
+                        <span className="text-center">{user.points_semester}</span>
+                    </div>
+                )
+            case "points_year":
+                return (
+                    <div className={'flex justify-center'}>
+                        <span className="text-center">{user.points_year}</span>
                     </div>
                 )
 
