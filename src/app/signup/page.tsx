@@ -18,13 +18,7 @@ import {EyeSlashFilledIcon} from "@/icons/EyeSlashFilledicon";
 import {EyeFilledIcon} from "@/icons/EyeFilledIcon";
 import {useRouter} from "next/navigation"
 import Cookies from "js-cookie"
-
-
-const emptyStringToUndefined = z.literal('').transform(() => undefined);
-
-export function asOptionalField<T extends z.ZodTypeAny>(schema: T) {
-    return schema.optional().or(emptyStringToUndefined);
-}
+import { asOptionalField } from "@/schema/schemaUtils";
 
 const formSchema = z.object({
     email: z.string().email({
@@ -40,7 +34,6 @@ const formSchema = z.object({
     last_name: z.string(),
     avatar: asOptionalField(z.string().url())
 })
-
 
 
 export default function SignupPage() {
